@@ -20,6 +20,8 @@ void displayAllStudents(const std::vector<Student>& students);
 void searchStudent(const std::vector<Student>& students);
 void modifyScore(std::vector<Student>& students);
 void sortStudents(std::vector<Student>& students);
+void addStudent(std::vector<Student>& students);
+
 
 // 主函数
 int main() {
@@ -68,6 +70,7 @@ void displayMenu() {
     std::cout << "3. 修改学生成绩" << std::endl;
     std::cout << "4. 排序学生信息" << std::endl;
     std::cout << "5. 退出系统" << std::endl;
+    std::cout << "6. 录入新学生成绩" << std::endl;
     std::cout << "=====================================" << std::endl;
 }
 
@@ -187,6 +190,30 @@ void searchStudent(const std::vector<Student>& students) {
     }
 }
 
+void addStudent(std::vector<Student>& students) {
+    Student newStudent;
+    std::cout << "请输入新学生的学号: ";
+    std::cin >> newStudent.id;
+
+    // 检查学号是否重复
+    for (const auto& student : students) {
+        if (student.id == newStudent.id) {
+            std::cout << "该学号已存在，无法添加！" << std::endl;
+            return;
+        }
+    }
+
+    std::cout << "请输入新学生的姓名: ";
+    std::cin.ignore(); // 清除上一次输入后的换行符
+    std::getline(std::cin, newStudent.name);
+
+    std::cout << "请输入新学生的成绩: ";
+    std::cin >> newStudent.score;
+
+    students.push_back(newStudent);
+    std::cout << "新学生信息已添加成功！" << std::endl;
+}
+
 // 修改学生成绩
 void modifyScore(std::vector<Student>& students) {
     if (students.empty()) {
@@ -221,7 +248,8 @@ void sortStudents(std::vector<Student>& students) {
         std::cout << "没有学生记录！" << std::endl;
         return;
     }
-    
+
+
     int sortType;
     std::cout << "请选择排序方式：" << std::endl;
     std::cout << "1. 按学号排序" << std::endl;
@@ -248,6 +276,10 @@ void sortStudents(std::vector<Student>& students) {
                 return a.score < b.score;
             });
             std::cout << "已按成绩从低到高排序！" << std::endl;
+            break;
+        case 6:
+            addStudent(students);
+            saveData(students);
             break;
         default:
             std::cout << "无效的选择！" << std::endl;
