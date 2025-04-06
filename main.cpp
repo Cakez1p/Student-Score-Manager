@@ -54,6 +54,10 @@ int main() {
                 saveData(students);
                 running = false;
                 break;
+            case 6:
+                addStudent(students);
+                saveData(students);
+                break;
             default:
                 std::cout << "无效的选择，请重试！" << std::endl;
         }
@@ -276,10 +280,6 @@ void sortStudents(std::vector<Student>& students) {
                 return a.score < b.score;
             });
             std::cout << "已按成绩从低到高排序！" << std::endl;
-            break;
-        case 6:
-            addStudent(students);
-            saveData(students);
             break;
         default:
             std::cout << "无效的选择！" << std::endl;
