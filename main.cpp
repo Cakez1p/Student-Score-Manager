@@ -4,7 +4,7 @@
 #include <vector>
 #include <iomanip>
 #include <algorithm>  // 添加algorithm头文件以使用std::sort
-void deleteStudent(std::vector<Student>& students);
+
 // 学生信息结构体
 struct Student {
     int id;
