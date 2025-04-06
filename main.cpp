@@ -3,16 +3,16 @@
 #include <string>
 #include <vector>
 #include <iomanip>
-#include <algorithm>  // Ìí¼ÓalgorithmÍ·ÎÄ¼şÒÔÊ¹ÓÃstd::sort
-
-// Ñ§ÉúĞÅÏ¢½á¹¹Ìå
+#include <algorithm>  // æ·»åŠ algorithmå¤´æ–‡ä»¶ä»¥ä½¿ç”¨std::sort
+void deleteStudent(std::vector<Student>& students);
+// å­¦ç”Ÿä¿¡æ¯ç»“æ„ä½“
 struct Student {
     int id;
     std::string name;
     double score;
 };
 
-// º¯ÊıÉùÃ÷
+// å‡½æ•°å£°æ˜
 void displayMenu();
 void loadData(std::vector<Student>& students);
 void saveData(const std::vector<Student>& students);
@@ -20,8 +20,9 @@ void displayAllStudents(const std::vector<Student>& students);
 void searchStudent(const std::vector<Student>& students);
 void modifyScore(std::vector<Student>& students);
 void sortStudents(std::vector<Student>& students);
-
-// Ö÷º¯Êı
+void deleteStudent(std::vector<Student>& students);
+void searchStudentByName(const std::vector<Student>& students);
+// ä¸»å‡½æ•°
 int main() {
     std::vector<Student> students;
     loadData(students);
@@ -31,7 +32,7 @@ int main() {
     
     while (running) {
         displayMenu();
-        std::cout << "ÇëÊäÈëÄúµÄÑ¡Ôñ: ";
+        std::cout << "è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©: ";
         std::cin >> choice;
         
         switch (choice) {
@@ -49,57 +50,66 @@ int main() {
                 sortStudents(students);
                 break;
             case 5:
+                deleteStudent(students);
+                break;
+            case 6:
+                searchStudentByName(students);
+                break;
+            case 7:
                 saveData(students);
                 running = false;
                 break;
+            
             default:
-                std::cout << "ÎŞĞ§µÄÑ¡Ôñ£¬ÇëÖØÊÔ£¡" << std::endl;
+                std::cout << "æ— æ•ˆçš„é€‰æ‹©ï¼Œè¯·é‡è¯•ï¼" << std::endl;
         }
     }
     
     return 0;
 }
 
-// ÏÔÊ¾²Ëµ¥
+// æ˜¾ç¤ºèœå•
 void displayMenu() {
-    std::cout << "\n========== Ñ§Éú³É¼¨¹ÜÀíÏµÍ³ ==========" << std::endl;
-    std::cout << "1. ÏÔÊ¾ËùÓĞÑ§ÉúĞÅÏ¢" << std::endl;
-    std::cout << "2. ²éÑ¯Ñ§ÉúĞÅÏ¢" << std::endl;
-    std::cout << "3. ĞŞ¸ÄÑ§Éú³É¼¨" << std::endl;
-    std::cout << "4. ÅÅĞòÑ§ÉúĞÅÏ¢" << std::endl;
-    std::cout << "5. ÍË³öÏµÍ³" << std::endl;
+    std::cout << "\n========== å­¦ç”Ÿæˆç»©ç®¡ç†ç³»ç»Ÿ ==========" << std::endl;
+    std::cout << "1. æ˜¾ç¤ºæ‰€æœ‰å­¦ç”Ÿä¿¡æ¯" << std::endl;
+    std::cout << "2. æŸ¥è¯¢å­¦ç”Ÿä¿¡æ¯" << std::endl;
+    std::cout << "3. ä¿®æ”¹å­¦ç”Ÿæˆç»©" << std::endl;
+    std::cout << "4. æ’åºå­¦ç”Ÿä¿¡æ¯" << std::endl;
+    std::cout << "5. åˆ é™¤å­¦ç”Ÿä¿¡æ¯" << std::endl;
+    std::cout << "6. æŒ‰å§“åæŸ¥è¯¢å­¦ç”Ÿä¿¡æ¯" << std::endl;
+    std::cout << "7. é€€å‡ºç³»ç»Ÿ" << std::endl;
     std::cout << "=====================================" << std::endl;
 }
 
-// ´ÓÎÄ¼ş¼ÓÔØÊı¾İ
+// ä»æ–‡ä»¶åŠ è½½æ•°æ®
 void loadData(std::vector<Student>& students) {
     std::ifstream inFile("students.dat", std::ios::binary);
     if (!inFile) {
-        std::cout << "ÎŞ·¨´ò¿ªÎÄ¼ş»òÎÄ¼ş²»´æÔÚ£¬½«´´½¨ĞÂÎÄ¼ş¡£" << std::endl;
+        std::cout << "æ— æ³•æ‰“å¼€æ–‡ä»¶æˆ–æ–‡ä»¶ä¸å­˜åœ¨ï¼Œå°†åˆ›å»ºæ–°æ–‡ä»¶ã€‚" << std::endl;
         return;
     }
     
     Student temp;
-    // ¶ÁÈ¡Ñ§ÉúÊıÁ¿
+    // è¯»å–å­¦ç”Ÿæ•°é‡
     int count;
     inFile.read(reinterpret_cast<char*>(&count), sizeof(count));
     
     for (int i = 0; i < count; i++) {
-        // ¶ÁÈ¡Ñ§ÉúID
+        // è¯»å–å­¦ç”ŸID
         inFile.read(reinterpret_cast<char*>(&temp.id), sizeof(temp.id));
         
-        // ¶ÁÈ¡ĞÕÃû³¤¶È
+        // è¯»å–å§“åé•¿åº¦
         int nameLength;
         inFile.read(reinterpret_cast<char*>(&nameLength), sizeof(nameLength));
         
-        // ¶ÁÈ¡ĞÕÃû
+        // è¯»å–å§“å
         char* name = new char[nameLength + 1];
         inFile.read(name, nameLength);
         name[nameLength] = '\0';
         temp.name = name;
         delete[] name;
         
-        // ¶ÁÈ¡³É¼¨
+        // è¯»å–æˆç»©
         inFile.read(reinterpret_cast<char*>(&temp.score), sizeof(temp.score));
         
         students.push_back(temp);
@@ -108,48 +118,48 @@ void loadData(std::vector<Student>& students) {
     inFile.close();
 }
 
-// ±£´æÊı¾İµ½ÎÄ¼ş
+// ä¿å­˜æ•°æ®åˆ°æ–‡ä»¶
 void saveData(const std::vector<Student>& students) {
     std::ofstream outFile("students.dat", std::ios::binary);
     if (!outFile) {
-        std::cout << "ÎŞ·¨´´½¨ÎÄ¼ş£¡" << std::endl;
+        std::cout << "æ— æ³•åˆ›å»ºæ–‡ä»¶ï¼" << std::endl;
         return;
     }
     
-    // Ğ´ÈëÑ§ÉúÊıÁ¿
+    // å†™å…¥å­¦ç”Ÿæ•°é‡
     int count = students.size();
     outFile.write(reinterpret_cast<const char*>(&count), sizeof(count));
     
     for (const auto& student : students) {
-        // Ğ´ÈëÑ§ÉúID
+        // å†™å…¥å­¦ç”ŸID
         outFile.write(reinterpret_cast<const char*>(&student.id), sizeof(student.id));
         
-        // Ğ´ÈëĞÕÃû³¤¶È
+        // å†™å…¥å§“åé•¿åº¦
         int nameLength = student.name.length();
         outFile.write(reinterpret_cast<const char*>(&nameLength), sizeof(nameLength));
         
-        // Ğ´ÈëĞÕÃû
+        // å†™å…¥å§“å
         outFile.write(student.name.c_str(), nameLength);
         
-        // Ğ´Èë³É¼¨
+        // å†™å…¥æˆç»©
         outFile.write(reinterpret_cast<const char*>(&student.score), sizeof(student.score));
     }
     
     outFile.close();
-    std::cout << "Êı¾İÒÑ³É¹¦±£´æ£¡" << std::endl;
+    std::cout << "æ•°æ®å·²æˆåŠŸä¿å­˜ï¼" << std::endl;
 }
 
-// ÏÔÊ¾ËùÓĞÑ§ÉúĞÅÏ¢
+// æ˜¾ç¤ºæ‰€æœ‰å­¦ç”Ÿä¿¡æ¯
 void displayAllStudents(const std::vector<Student>& students) {
     if (students.empty()) {
-        std::cout << "Ã»ÓĞÑ§Éú¼ÇÂ¼£¡" << std::endl;
+        std::cout << "æ²¡æœ‰å­¦ç”Ÿè®°å½•ï¼" << std::endl;
         return;
     }
     
-    std::cout << "\nËùÓĞÑ§ÉúĞÅÏ¢£º" << std::endl;
-    std::cout << std::left << std::setw(10) << "Ñ§ºÅ" 
-              << std::setw(20) << "ĞÕÃû" 
-              << std::setw(10) << "³É¼¨" << std::endl;
+    std::cout << "\næ‰€æœ‰å­¦ç”Ÿä¿¡æ¯ï¼š" << std::endl;
+    std::cout << std::left << std::setw(10) << "å­¦å·" 
+              << std::setw(20) << "å§“å" 
+              << std::setw(10) << "æˆç»©" << std::endl;
     std::cout << "----------------------------------------" << std::endl;
     
     for (const auto& student : students) {
@@ -159,75 +169,75 @@ void displayAllStudents(const std::vector<Student>& students) {
     }
 }
 
-// ²éÑ¯Ñ§ÉúĞÅÏ¢
+// æŸ¥è¯¢å­¦ç”Ÿä¿¡æ¯
 void searchStudent(const std::vector<Student>& students) {
     if (students.empty()) {
-        std::cout << "Ã»ÓĞÑ§Éú¼ÇÂ¼£¡" << std::endl;
+        std::cout << "æ²¡æœ‰å­¦ç”Ÿè®°å½•ï¼" << std::endl;
         return;
     }
     
     int searchId;
-    std::cout << "ÇëÊäÈëÒª²éÑ¯µÄÑ§ÉúÑ§ºÅ: ";
+    std::cout << "è¯·è¾“å…¥è¦æŸ¥è¯¢çš„å­¦ç”Ÿå­¦å·: ";
     std::cin >> searchId;
     
     bool found = false;
     for (const auto& student : students) {
         if (student.id == searchId) {
-            std::cout << "\nÕÒµ½Ñ§ÉúĞÅÏ¢£º" << std::endl;
-            std::cout << "Ñ§ºÅ: " << student.id << std::endl;
-            std::cout << "ĞÕÃû: " << student.name << std::endl;
-            std::cout << "³É¼¨: " << student.score << std::endl;
+            std::cout << "\næ‰¾åˆ°å­¦ç”Ÿä¿¡æ¯ï¼š" << std::endl;
+            std::cout << "å­¦å·: " << student.id << std::endl;
+            std::cout << "å§“å: " << student.name << std::endl;
+            std::cout << "æˆç»©: " << student.score << std::endl;
             found = true;
             break;
         }
     }
     
     if (!found) {
-        std::cout << "Î´ÕÒµ½Ñ§ºÅÎª " << searchId << " µÄÑ§Éú£¡" << std::endl;
+        std::cout << "æœªæ‰¾åˆ°å­¦å·ä¸º " << searchId << " çš„å­¦ç”Ÿï¼" << std::endl;
     }
 }
 
-// ĞŞ¸ÄÑ§Éú³É¼¨
+// ä¿®æ”¹å­¦ç”Ÿæˆç»©
 void modifyScore(std::vector<Student>& students) {
     if (students.empty()) {
-        std::cout << "Ã»ÓĞÑ§Éú¼ÇÂ¼£¡" << std::endl;
+        std::cout << "æ²¡æœ‰å­¦ç”Ÿè®°å½•ï¼" << std::endl;
         return;
     }
     
     int modifyId;
-    std::cout << "ÇëÊäÈëÒªĞŞ¸Ä³É¼¨µÄÑ§ÉúÑ§ºÅ: ";
+    std::cout << "è¯·è¾“å…¥è¦ä¿®æ”¹æˆç»©çš„å­¦ç”Ÿå­¦å·: ";
     std::cin >> modifyId;
     
     bool found = false;
     for (auto& student : students) {
         if (student.id == modifyId) {
-            std::cout << "Ñ§Éú£º" << student.name << "£¬µ±Ç°³É¼¨£º" << student.score << std::endl;
-            std::cout << "ÇëÊäÈëĞÂµÄ³É¼¨: ";
+            std::cout << "å­¦ç”Ÿï¼š" << student.name << "ï¼Œå½“å‰æˆç»©ï¼š" << student.score << std::endl;
+            std::cout << "è¯·è¾“å…¥æ–°çš„æˆç»©: ";
             std::cin >> student.score;
-            std::cout << "³É¼¨ĞŞ¸Ä³É¹¦£¡" << std::endl;
+            std::cout << "æˆç»©ä¿®æ”¹æˆåŠŸï¼" << std::endl;
             found = true;
             break;
         }
     }
     
     if (!found) {
-        std::cout << "Î´ÕÒµ½Ñ§ºÅÎª " << modifyId << " µÄÑ§Éú£¡" << std::endl;
+        std::cout << "æœªæ‰¾åˆ°å­¦å·ä¸º " << modifyId << " çš„å­¦ç”Ÿï¼" << std::endl;
     }
 }
 
-// ÅÅĞòÑ§ÉúĞÅÏ¢
+// æ’åºå­¦ç”Ÿä¿¡æ¯
 void sortStudents(std::vector<Student>& students) {
     if (students.empty()) {
-        std::cout << "Ã»ÓĞÑ§Éú¼ÇÂ¼£¡" << std::endl;
+        std::cout << "æ²¡æœ‰å­¦ç”Ÿè®°å½•ï¼" << std::endl;
         return;
     }
     
     int sortType;
-    std::cout << "ÇëÑ¡ÔñÅÅĞò·½Ê½£º" << std::endl;
-    std::cout << "1. °´Ñ§ºÅÅÅĞò" << std::endl;
-    std::cout << "2. °´³É¼¨´Ó¸ßµ½µÍÅÅĞò" << std::endl;
-    std::cout << "3. °´³É¼¨´ÓµÍµ½¸ßÅÅĞò" << std::endl;
-    std::cout << "ÇëÊäÈëÄúµÄÑ¡Ôñ: ";
+    std::cout << "è¯·é€‰æ‹©æ’åºæ–¹å¼ï¼š" << std::endl;
+    std::cout << "1. æŒ‰å­¦å·æ’åº" << std::endl;
+    std::cout << "2. æŒ‰æˆç»©ä»é«˜åˆ°ä½æ’åº" << std::endl;
+    std::cout << "3. æŒ‰æˆç»©ä»ä½åˆ°é«˜æ’åº" << std::endl;
+    std::cout << "è¯·è¾“å…¥æ‚¨çš„é€‰æ‹©: ";
     std::cin >> sortType;
     
     switch (sortType) {
@@ -235,24 +245,75 @@ void sortStudents(std::vector<Student>& students) {
             std::sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
                 return a.id < b.id;
             });
-            std::cout << "ÒÑ°´Ñ§ºÅÅÅĞò£¡" << std::endl;
+            std::cout << "å·²æŒ‰å­¦å·æ’åºï¼" << std::endl;
             break;
         case 2:
             std::sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
                 return a.score > b.score;
             });
-            std::cout << "ÒÑ°´³É¼¨´Ó¸ßµ½µÍÅÅĞò£¡" << std::endl;
+            std::cout << "å·²æŒ‰æˆç»©ä»é«˜åˆ°ä½æ’åºï¼" << std::endl;
             break;
         case 3:
             std::sort(students.begin(), students.end(), [](const Student& a, const Student& b) {
                 return a.score < b.score;
             });
-            std::cout << "ÒÑ°´³É¼¨´ÓµÍµ½¸ßÅÅĞò£¡" << std::endl;
+            std::cout << "å·²æŒ‰æˆç»©ä»ä½åˆ°é«˜æ’åºï¼" << std::endl;
             break;
         default:
-            std::cout << "ÎŞĞ§µÄÑ¡Ôñ£¡" << std::endl;
+            std::cout << "æ— æ•ˆçš„é€‰æ‹©ï¼" << std::endl;
             return;
     }
     
     displayAllStudents(students);
+}
+
+// åˆ é™¤å­¦ç”Ÿä¿¡æ¯
+void deleteStudent(std::vector<Student>& students) {
+    if (students.empty()) {
+        std::cout << "æ²¡æœ‰å­¦ç”Ÿè®°å½•ï¼" << std::endl;
+        return;
+    }
+
+    int deleteId;
+    std::cout << "è¯·è¾“å…¥è¦åˆ é™¤çš„å­¦ç”Ÿå­¦å·: ";
+    std::cin >> deleteId;
+
+    auto it = std::remove_if(students.begin(), students.end(), [deleteId](const Student& student) {
+        return student.id == deleteId;
+    });
+
+    if (it != students.end()) {
+        students.erase(it, students.end());
+        std::cout << "å­¦ç”Ÿä¿¡æ¯å·²åˆ é™¤ï¼" << std::endl;
+        saveData(students); // åˆ é™¤åä¿å­˜æ•°æ®
+    } else {
+        std::cout << "æœªæ‰¾åˆ°å­¦å·ä¸º " << deleteId << " çš„å­¦ç”Ÿï¼" << std::endl;
+    }
+}
+
+// æŒ‰å§“åæŸ¥è¯¢å­¦ç”Ÿä¿¡æ¯
+void searchStudentByName(const std::vector<Student>& students) {
+    if (students.empty()) {
+        std::cout << "æ²¡æœ‰å­¦ç”Ÿè®°å½•ï¼" << std::endl;
+        return;
+    }
+
+    std::string searchName;
+    std::cout << "è¯·è¾“å…¥è¦æŸ¥è¯¢çš„å­¦ç”Ÿå§“å: ";
+    std::cin >> searchName;
+
+    bool found = false;
+    for (const auto& student : students) {
+        if (student.name == searchName) {
+            std::cout << "\næ‰¾åˆ°å­¦ç”Ÿä¿¡æ¯ï¼š" << std::endl;
+            std::cout << "å­¦å·: " << student.id << std::endl;
+            std::cout << "å§“å: " << student.name << std::endl;
+            std::cout << "æˆç»©: " << student.score << std::endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "æœªæ‰¾åˆ°å§“åä¸º " << searchName << " çš„å­¦ç”Ÿï¼" << std::endl;
+    }
 }
