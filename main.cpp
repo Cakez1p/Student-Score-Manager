@@ -21,7 +21,8 @@ void searchStudent(const std::vector<Student>& students);
 void modifyScore(std::vector<Student>& students);
 void sortStudents(std::vector<Student>& students);
 void addStudent(std::vector<Student>& students);
-
+void deleteStudent(std::vector<Student>& students);
+void searchStudentByName(const std::vector<Student>& students);
 
 // 主函数
 int main() {
@@ -51,13 +52,20 @@ int main() {
                 sortStudents(students);
                 break;
             case 5:
-                saveData(students);
-                running = false;
+                deleteStudent(students);
                 break;
             case 6:
+                searchStudentByName(students);
+                break;
+            case 7:
                 addStudent(students);
                 saveData(students);
                 break;
+            case 8:
+                saveData(students);
+                running = false;
+                break;
+
             default:
                 std::cout << "无效的选择，请重试！" << std::endl;
         }
@@ -73,8 +81,10 @@ void displayMenu() {
     std::cout << "2. 查询学生信息" << std::endl;
     std::cout << "3. 修改学生成绩" << std::endl;
     std::cout << "4. 排序学生信息" << std::endl;
-    std::cout << "5. 退出系统" << std::endl;
-    std::cout << "6. 录入新学生成绩" << std::endl;
+    std::cout << "5. 删除学生信息" << std::endl;
+    std::cout << "6. 按姓名查询学生信息" << std::endl;
+    std::cout << "7. 录入新学生成绩" << std::endl;
+    std::cout << "8. 退出系统" << std::endl;
     std::cout << "=====================================" << std::endl;
 }
 
@@ -252,8 +262,7 @@ void sortStudents(std::vector<Student>& students) {
         std::cout << "没有学生记录！" << std::endl;
         return;
     }
-
-
+    
     int sortType;
     std::cout << "请选择排序方式：" << std::endl;
     std::cout << "1. 按学号排序" << std::endl;
@@ -287,4 +296,55 @@ void sortStudents(std::vector<Student>& students) {
     }
     
     displayAllStudents(students);
+}
+
+// 删除学生信息
+void deleteStudent(std::vector<Student>& students) {
+    if (students.empty()) {
+        std::cout << "没有学生记录！" << std::endl;
+        return;
+    }
+
+    int deleteId;
+    std::cout << "请输入要删除的学生学号: ";
+    std::cin >> deleteId;
+
+    auto it = std::remove_if(students.begin(), students.end(), [deleteId](const Student& student) {
+        return student.id == deleteId;
+    });
+
+    if (it != students.end()) {
+        students.erase(it, students.end());
+        std::cout << "学生信息已删除！" << std::endl;
+        saveData(students); // 删除后保存数据
+    } else {
+        std::cout << "未找到学号为 " << deleteId << " 的学生！" << std::endl;
+    }
+}
+
+// 按姓名查询学生信息
+void searchStudentByName(const std::vector<Student>& students) {
+    if (students.empty()) {
+        std::cout << "没有学生记录！" << std::endl;
+        return;
+    }
+
+    std::string searchName;
+    std::cout << "请输入要查询的学生姓名: ";
+    std::cin >> searchName;
+
+    bool found = false;
+    for (const auto& student : students) {
+        if (student.name == searchName) {
+            std::cout << "\n找到学生信息：" << std::endl;
+            std::cout << "学号: " << student.id << std::endl;
+            std::cout << "姓名: " << student.name << std::endl;
+            std::cout << "成绩: " << student.score << std::endl;
+            found = true;
+        }
+    }
+
+    if (!found) {
+        std::cout << "未找到姓名为 " << searchName << " 的学生！" << std::endl;
+    }
 }
