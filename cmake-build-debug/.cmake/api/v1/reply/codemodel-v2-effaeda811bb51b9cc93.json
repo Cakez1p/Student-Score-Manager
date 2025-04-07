@@ -49,8 +49,8 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "C:/Users/Ruri_Station/CLionProjects/Student-Score-Manager/cmake-build-debug",
-		"source" : "C:/Users/Ruri_Station/CLionProjects/Student-Score-Manager"
+		"build" : "C:/Users/Ruri_Station/CLionProjects/tem/Student-Score-Manager/cmake-build-debug",
+		"source" : "C:/Users/Ruri_Station/CLionProjects/tem/Student-Score-Manager"
 	},
 	"version" : 
 	{
